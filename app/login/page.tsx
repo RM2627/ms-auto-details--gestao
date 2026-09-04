@@ -1,0 +1,9 @@
+"use client";
+import { useState,type FormEvent } from "react";
+import { LoaderCircle,LockKeyhole } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { signIn } from "@/lib/api-client";
+import { sitePath } from "@/lib/site-path";
+export default function Login(){const[email,setEmail]=useState(""),[password,setPassword]=useState(""),[busy,setBusy]=useState(false),[error,setError]=useState("");async function submit(e:FormEvent){e.preventDefault();setBusy(true);setError("");try{await signIn(email,password);location.href=sitePath("/");}catch(e){setError(e instanceof Error?e.message:"Não foi possível entrar.");setBusy(false);}}return <main className="grid min-h-screen place-items-center bg-neutral-950 p-5"><section className="w-full max-w-md rounded-3xl border border-white/10 bg-white p-7 shadow-2xl"><div className="mb-7 flex items-center gap-3"><span className="grid size-12 place-items-center rounded-2xl bg-red-700 font-black text-white">MS</span><div><h1 className="text-xl font-black">MS AUTO DETAILS</h1><p className="text-sm text-neutral-500">Acesso à gestão</p></div></div><form onSubmit={submit} className="space-y-5"><div className="space-y-2"><Label htmlFor="email">E-mail</Label><Input id="email" type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)}/></div><div className="space-y-2"><Label htmlFor="password">Senha</Label><Input id="password" type="password" autoComplete="current-password" required minLength={6} value={password} onChange={e=>setPassword(e.target.value)}/></div>{error&&<p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}<Button disabled={busy} className="h-11 w-full bg-red-700 text-white hover:bg-red-800">{busy?<LoaderCircle className="animate-spin"/>:<LockKeyhole/>}{busy?"Entrando...":"Entrar"}</Button></form></section></main>}
